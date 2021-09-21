@@ -167,8 +167,8 @@ function newsFeed() {
   }
 
   template = template.replace('{{__news_feed__}}', newsList.join(''));
-  template = template.replace('{{__prev_page__}}', store.currentPage > 1 ? store.currentPage - 1 : 1);
-  template = template.replace('{{__next_page__}}', store.currentPage * 10 < newsFeed.length ? store.currentPage + 1 : store.currentPage);
+  template = template.replace('{{__prev_page__}}', String(store.currentPage > 1 ? store.currentPage - 1 : 1));
+  template = template.replace('{{__next_page__}}', String(store.currentPage * 10 < newsFeed.length ? store.currentPage + 1 : store.currentPage));
   updateView(template);
 }
 
@@ -184,25 +184,22 @@ function newsDetail() {
     }
   }
 
-  function makeComment(comments, called) {
-    if (called === void 0) {
-      called = 0;
+  updateView(template.replace('{{__comments__}}', makeComment(newsContent.comments)));
+}
+
+function makeComment(comments) {
+  var commentString = [];
+
+  for (var i = 0; i < comments.length; i++) {
+    var comment = comments[i];
+    commentString.push("\n        <div style=\"padding-left: " + comment.level * 40 + "px;\" class=\"mt-4\">\n            <div class=\"text-gray-400\">\n                <i class=\"fa fa-sort-up mr-2\"></i>\n                <strong>" + comment.user + "</strong> " + comment.time_ago + "\n            </div>\n            <p class=\"text-gray-700\">" + comment.content + "</p>\n        </div>      \n        ");
+
+    if (comment.comments.length > 0) {
+      commentString.push(makeComment(comment.comments));
     }
-
-    var commentString = [];
-
-    for (var i = 0; i < comments.length; i++) {
-      commentString.push("\n            <div style=\"padding-left: " + called * 40 + "px;\" class=\"mt-4\">\n                <div class=\"text-gray-400\">\n                    <i class=\"fa fa-sort-up mr-2\"></i>\n                    <strong>" + comments[i].user + "</strong> " + comments[i].time_ago + "\n                </div>\n                <p class=\"text-gray-700\">" + comments[i].content + "</p>\n            </div>      \n            ");
-
-      if (comments[i].comments.length > 0) {
-        commentString.push(makeComment(comments[i].comments, called + 1));
-      }
-    }
-
-    return commentString.join('');
   }
 
-  updateView(template.replace('{{__comments__}}', makeComment(newsContent.comments)));
+  return commentString.join('');
 }
 
 function router() {
@@ -248,7 +245,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "14481" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "2548" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
