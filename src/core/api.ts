@@ -13,17 +13,25 @@ export class Api {
         this.ajax.open('GET', this.url, false);
         this.ajax.send();
 
-        return JSON.parse(this.ajax.response);
+        return JSON.parse(this.ajax.response) as AjaxResponse;
     }
 }
 
 export class NewsFeedApi extends Api {
+    constructor(url: string) {
+        super(url);
+    }
+
     getData(): NewsFeed[] {
         return this.getRequest<NewsFeed[]>();
     }
 }
 
 export class NewsDetailApi extends Api {
+    constructor(url: string) {
+        super(url);
+    }
+
     getData(): NewsDetail {
         return this.getRequest<NewsDetail>();
     }
